@@ -1,0 +1,385 @@
+<!DOCTYPE html><html lang="so">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MURAABAXA CALCULATOR</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #e6f2ff;
+      color: #003366;
+    }
+    .container {
+      max-width: 500px;
+      margin: 40px auto;
+      padding: 20px;
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #007acc;
+      font-size: 26px;
+      margin-bottom: 30px;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #b3d1ff;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    button {
+      background-color: #007acc;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #005f99;
+    }
+    .result {
+      background: #f0f8ff;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 20px;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+      position: relative;
+    }
+    .result table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .result th, .result td {
+      text-align: left;
+      padding: 8px;
+      border-bottom: 1px solid #ddd;
+    }
+    .result td.red {
+      color: #cc0000;
+      font-weight: bold;
+    }
+    .result td.green {
+      color: #007a33;
+      font-weight: bold;
+    }
+    .print-btn {
+      display: none;
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background: #007acc;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 8px 12px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .print-btn::after {
+      content: " \1F5B6";
+    }
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      .result, .result * {
+        visibility: visible;
+      }
+      .result {
+        position: absolute;
+        left: 0;
+        top: 0;
+        box-shadow: none;
+      }
+    }
+    @media (max-width: 600px) {
+      .container {
+        margin: 20px;
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>MURAABAXA CALCULATOR</h1><label for="type">Nooca Maalgashiga:</label>
+<select id="type">
+  <option value="badeeco">Badeeco</option>
+  <option value="dhul">Dhul</option>
+</select>
+
+<label for="price">Qiimaha Hantida ($):</label>
+<input type="number" id="price" placeholder="Tusaale: 5000" />
+
+<label for="firstDiscount">Discount (%) first payment :</label>
+<input type="number" id="firstDiscount" placeholder="Tusaale: 5" />
+
+<label for="rateDiscount">Discount (%) profit :</label>
+<input type="number" id="rateDiscount" placeholder="Tusaale: 2" />
+
+<label for="years">Muddada (Sano):</label>
+<select id="years">
+  <option value="1">1 sano</option>
+  <option value="1.5">1.5 sano</option>
+  <option value="2">2 sano</option>
+  <option value="3">3 sano</option>
+  <option value="4">4 sano</option>
+  <option value="5">5 sano</option>
+</select>
+
+<button onclick="calculate()">Xisaabi</button>
+
+<div class="result" id="result"></div>
+
+  </div>  <script>
+    function formatNumber(num) {
+      return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function calculate() {
+      const type = document.getElementById("type").value;
+      const price = parseFloat(document.getElementById("price").value);
+      const years = parseFloat(document.getElementById("years").value);
+      const rateDiscount = parseFloat(document.getElementById("rateDiscount").value) || 0;
+      const firstDiscount = parseFloat(document.getElementById("firstDiscount").value) || 0;
+
+      if (isNaN(price) || price <= 0) {
+        document.getElementById("result").innerHTML = "<p style='color:red;'>Fadlan geli qiimo sax ah.</p>";
+        return;
+      }
+
+      const rateMap = { 1: 0.12, 1.5: 0.16, 2: 0.18, 3: 0.24, 4: 0.28, 5: 0.30 };
+      let rate = rateMap[years] - (rateDiscount / 100);
+      rate = rate < 0 ? 0 : rate;
+
+      let downRate = type === "badeeco" ? 0.3 : 0.4;
+      downRate -= (firstDiscount / 100);
+      downRate = downRate < 0 ? 0 : downRate;
+
+      const downPayment = price * downRate;
+      const financedAmount = price - downPayment;
+      const profit = financedAmount * rate;
+      const totalPayable = financedAmount + profit;
+      const months = years * 12;
+      const monthlyInstallment = (totalPayable / (months - 1));
+
+      const resultHTML = `
+        <table>
+          <tr><td><strong>Nooca Maalgashiga:</strong></td><td class="green">${type === 'badeeco' ? 'Badeeco' : 'Dhul'}</td></tr>
+          <tr><td><strong>Qiimaha Hantida:</strong></td><td class="green">$${formatNumber(price)}</td></tr>
+          <tr><td><strong>Bixinta Hore (${(downRate * 100).toFixed(2)}%):</strong></td><td class="green">$${formatNumber(downPayment)}</td></tr>
+          <tr><td><strong>Remaining :</strong></td><td class="red">$${formatNumber(financedAmount)}</td></tr>
+          <tr><td><strong>Profit (${(rate * 100).toFixed(2)}%):</strong></td><td class="green">$${formatNumber(profit)}</td></tr>
+          <tr><td><strong>Total remainder:</strong></td><td class="red">$${formatNumber(totalPayable)}</td></tr>
+          <tr><td><strong>Bixinta Bil kasta :</strong></td><td class="green">$${formatNumber(monthlyInstallment)}</td></tr>
+        </table>
+        <button class="print-btn" onclick="window.print()">Daabac</button>
+      `;
+
+      document.getElementById("result").innerHTML = resultHTML;
+    }
+  </script></body>
+</html><!DOCTYPE html><html lang="so">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MURAABAXA CALCULATOR</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #e6f2ff;
+      color: #003366;
+    }
+    .container {
+      max-width: 500px;
+      margin: 40px auto;
+      padding: 20px;
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #007acc;
+      font-size: 26px;
+      margin-bottom: 30px;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #b3d1ff;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    button {
+      background-color: #007acc;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #005f99;
+    }
+    .result {
+      background: #f0f8ff;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 20px;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+      position: relative;
+    }
+    .result table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .result th, .result td {
+      text-align: left;
+      padding: 8px;
+      border-bottom: 1px solid #ddd;
+    }
+    .result td.red {
+      color: #cc0000;
+      font-weight: bold;
+    }
+    .result td.green {
+      color: #007a33;
+      font-weight: bold;
+    }
+    .print-btn {
+      display: none;
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background: #007acc;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 8px 12px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .print-btn::after {
+      content: " \1F5B6";
+    }
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      .result, .result * {
+        visibility: visible;
+      }
+      .result {
+        position: absolute;
+        left: 0;
+        top: 0;
+        box-shadow: none;
+      }
+    }
+    @media (max-width: 600px) {
+      .container {
+        margin: 20px;
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>MURAABAXA CALCULATOR</h1><label for="type">Nooca Maalgashiga:</label>
+<select id="type">
+  <option value="badeeco">Badeeco</option>
+  <option value="dhul">Dhul</option>
+</select>
+
+<label for="price">Qiimaha Hantida ($):</label>
+<input type="number" id="price" placeholder="Tusaale: 5000" />
+
+<label for="firstDiscount">Discount (%) first payment :</label>
+<input type="number" id="firstDiscount" placeholder="Tusaale: 5" />
+
+<label for="rateDiscount">Discount (%) profit :</label>
+<input type="number" id="rateDiscount" placeholder="Tusaale: 2" />
+
+<label for="years">Muddada (Sano):</label>
+<select id="years">
+  <option value="1">1 sano</option>
+  <option value="1.5">1.5 sano</option>
+  <option value="2">2 sano</option>
+  <option value="3">3 sano</option>
+  <option value="4">4 sano</option>
+  <option value="5">5 sano</option>
+</select>
+
+<button onclick="calculate()">Xisaabi</button>
+
+<div class="result" id="result"></div>
+
+  </div>  <script>
+    function formatNumber(num) {
+      return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function calculate() {
+      const type = document.getElementById("type").value;
+      const price = parseFloat(document.getElementById("price").value);
+      const years = parseFloat(document.getElementById("years").value);
+      const rateDiscount = parseFloat(document.getElementById("rateDiscount").value) || 0;
+      const firstDiscount = parseFloat(document.getElementById("firstDiscount").value) || 0;
+
+      if (isNaN(price) || price <= 0) {
+        document.getElementById("result").innerHTML = "<p style='color:red;'>Fadlan geli qiimo sax ah.</p>";
+        return;
+      }
+
+      const rateMap = { 1: 0.12, 1.5: 0.16, 2: 0.18, 3: 0.24, 4: 0.28, 5: 0.30 };
+      let rate = rateMap[years] - (rateDiscount / 100);
+      rate = rate < 0 ? 0 : rate;
+
+      let downRate = type === "badeeco" ? 0.3 : 0.4;
+      downRate -= (firstDiscount / 100);
+      downRate = downRate < 0 ? 0 : downRate;
+
+      const downPayment = price * downRate;
+      const financedAmount = price - downPayment;
+      const profit = financedAmount * rate;
+      const totalPayable = financedAmount + profit;
+      const months = years * 12;
+      const monthlyInstallment = (totalPayable / (months - 1));
+
+      const resultHTML = `
+        <table>
+          <tr><td><strong>Nooca Maalgashiga:</strong></td><td class="green">${type === 'badeeco' ? 'Badeeco' : 'Dhul'}</td></tr>
+          <tr><td><strong>Qiimaha Hantida:</strong></td><td class="green">$${formatNumber(price)}</td></tr>
+          <tr><td><strong>Bixinta Hore (${(downRate * 100).toFixed(2)}%):</strong></td><td class="green">$${formatNumber(downPayment)}</td></tr>
+          <tr><td><strong>Remaining :</strong></td><td class="red">$${formatNumber(financedAmount)}</td></tr>
+          <tr><td><strong>Profit (${(rate * 100).toFixed(2)}%):</strong></td><td class="green">$${formatNumber(profit)}</td></tr>
+          <tr><td><strong>Total remainder:</strong></td><td class="red">$${formatNumber(totalPayable)}</td></tr>
+          <tr><td><strong>Bixinta Bil kasta :</strong></td><td class="green">$${formatNumber(monthlyInstallment)}</td></tr>
+        </table>
+        <button class="print-btn" onclick="window.print()">Daabac</button>
+      `;
+
+      document.getElementById("result").innerHTML = resultHTML;
+    }
+  </script></body>
+</html>
