@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="so">
+<!DOCTYPE html>
+<html lang="so">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -37,6 +38,12 @@
       border: 1px solid #b3d1ff;
       border-radius: 5px;
       font-size: 16px;
+      box-sizing: border-box;
+      outline: none;
+    }
+    input:focus, select:focus {
+      border-color: #007acc;
+      box-shadow: 0 0 3px #66b3ff;
     }
     button {
       background-color: #007acc;
@@ -113,36 +120,37 @@
 </head>
 <body>
   <div class="container">
-    <h1>MURAABAXA CALCULATOR</h1><label for="type">Nooca Maalgashiga:</label>
-<select id="type">
-  <option value="badeeco">Badeeco</option>
-  <option value="dhul">Dhul</option>
-</select>
+    <h1>MURAABAXA CALCULATOR</h1>
 
-<label for="price">Qiimaha Hantida ($):</label>
-<input type="number" id="price" placeholder="Tusaale: 5000" />
+    <label for="type">Nooca Maalgashiga:</label>
+    <select id="type">
+      <option value="badeeco">Badeeco</option>
+      <option value="dhul">Dhul</option>
+    </select>
 
-<label for="firstDiscount">Discount (%) first payment :</label>
-<input type="number" id="firstDiscount" placeholder="Tusaale: 5" />
+    <label for="price">Qiimaha Hantida ($):</label>
+    <input type="number" id="price" placeholder="Tusaale: 5000" />
 
-<label for="rateDiscount">Discount (%) profit :</label>
-<input type="number" id="rateDiscount" placeholder="Tusaale: 2" />
+    <label for="firstDiscount">Discount (%) first payment :</label>
+    <input type="number" id="firstDiscount" placeholder="Tusaale: 5" />
 
-<label for="years">Muddada (Sano):</label>
-<select id="years">
-  <option value="1">1 sano</option>
-  <option value="1.5">1.5 sano</option>
-  <option value="2">2 sano</option>
-  <option value="3">3 sano</option>
-  <option value="4">4 sano</option>
-  <option value="5">5 sano</option>
-</select>
+    <label for="rateDiscount">Discount (%) profit :</label>
+    <input type="number" id="rateDiscount" placeholder="Tusaale: 2" />
 
-<button onclick="calculate()">Xisaabi</button>
+    <label for="years">Muddada (Sano):</label>
+    <select id="years">
+      <option value="1">1 sano</option>
+      <option value="1.5">1.5 sano</option>
+      <option value="2">2 sano</option>
+      <option value="3">3 sano</option>
+    </select>
 
-<div class="result" id="result"></div>
+    <button onclick="calculate()">Calculate</button>
 
-  </div>  <script>
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
     function formatNumber(num) {
       return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
@@ -159,7 +167,7 @@
         return;
       }
 
-      const rateMap = { 1: 0.12, 1.5: 0.16, 2: 0.18, 3: 0.24, 4: 0.28, 5: 0.30 };
+      const rateMap = { 1: 0.12, 1.5: 0.16, 2: 0.18, 3: 0.24 };
       let rate = rateMap[years] - (rateDiscount / 100);
       rate = rate < 0 ? 0 : rate;
 
@@ -172,7 +180,7 @@
       const profit = financedAmount * rate;
       const totalPayable = financedAmount + profit;
       const months = years * 12;
-      const monthlyInstallment = (totalPayable / (months - 1));
+      const monthlyInstallment = totalPayable / (months - 1);
 
       const resultHTML = `
         <table>
@@ -189,5 +197,6 @@
 
       document.getElementById("result").innerHTML = resultHTML;
     }
-  </script></body>
+  </script>
+</body>
 </html>
