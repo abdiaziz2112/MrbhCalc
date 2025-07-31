@@ -5,33 +5,44 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>404 - Page Not Found</title>
   <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
-      background-color: #f9f9f9;
+      background-color: #e0e0e0; /* light gray */
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
       height: 100vh;
-      margin: 0;
-      color: #333;
+      overflow: hidden;
+    }
+
+    .container {
+      text-align: center;
+      padding: 20px;
+      max-width: 500px;
     }
 
     h1 {
       font-size: 100px;
-      margin: 0;
       color: #ff4d4d;
+      margin-bottom: 10px;
     }
 
     h2 {
       font-size: 28px;
-      margin: 10px 0;
+      color: #333;
+      margin-bottom: 10px;
     }
 
     p {
       font-size: 18px;
-      margin: 10px 0 30px;
-      color: #666;
+      color: #555;
+      margin-bottom: 30px;
     }
 
     a.button {
@@ -41,7 +52,8 @@
       padding: 12px 24px;
       border-radius: 8px;
       font-weight: bold;
-      transition: background-color 0.3s;
+      transition: background-color 0.3s ease;
+      display: inline-block;
     }
 
     a.button:hover {
@@ -49,16 +61,30 @@
     }
 
     .emoji {
-      font-size: 48px;
+      font-size: 50px;
       margin-bottom: 20px;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 70px;
+      }
+      h2 {
+        font-size: 22px;
+      }
+      p {
+        font-size: 16px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="emoji">😕</div>
-  <h1>404</h1>
-  <h2>Page Not Found</h2>
-  <p>Sorry, the page you’re looking for doesn’t exist or has been moved.</p>
-  <a href="index.html" class="button">Go Home</a>
+  <div class="container">
+    <div class="emoji">😕</div>
+    <h1>404</h1>
+    <h2>Page Not Found</h2>
+    <p>Sorry, the page you’re looking for doesn’t exist or has been moved.</p>
+    <a href="index.html" class="button">Go Home</a>
+  </div>
 </body>
 </html>
