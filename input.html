@@ -156,6 +156,8 @@
         return;
       }
 
+        
+
       const downPayment = price * (downPercent / 100);
       const financedAmount = price - downPayment;
       const profit = financedAmount * (ratePercent / 100);
@@ -176,6 +178,16 @@
 
       document.getElementById("result").innerHTML = resultHTML;
     }
+
+
+    // ENTER key press triggers Calculate
+  document.addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      calculate();
+
+
+    
   </script>
 </body>
 </html>
